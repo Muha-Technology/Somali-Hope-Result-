@@ -3,81 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <title>Somali Hope Secondary School</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0a3cff, #0bbcd6);
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#0a4bff,#00bcd4);
 }
 
-.container {
-  max-width: 500px;
-  margin: 50px auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-  position: relative;
+.container{
+  max-width:540px;
+  margin:40px auto;
+  background:#fff;
+  border-radius:14px;
+  padding:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  position:relative;
 }
 
-.container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("https://raw.githubusercontent.com/Muha-Technology/Somali-Hope-Asset/main/Logo.png") center no-repeat;
-  background-size: 260px;
-  opacity: 0.05;
-  pointer-events: none;
+.container::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url("https://raw.githubusercontent.com/Muha-Technology/Somali-Hope-Asset/main/Logo.png")
+    center no-repeat;
+  background-size:260px;
+  opacity:0.05;
+  pointer-events:none;
 }
 
-.content {
-  position: relative;
-  z-index: 1;
+.content{position:relative;z-index:1;}
+
+.header{
+  text-align:center;
 }
 
-h2 {
-  text-align: center;
-  color: #0a3cff;
+.header img{
+  width:110px;
 }
 
-input, button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  font-size: 16px;
-  border-radius: 8px;
+.header h2{
+  margin:10px 0 3px;
+  color:#0a4bff;
 }
 
-input {
-  border: 1px solid #ccc;
+.header .sub{
+  font-weight:bold;
+  border-bottom:2px solid #0a4bff;
+  display:inline-block;
+  padding-bottom:4px;
 }
 
-button {
-  background: #0a3cff;
-  color: white;
-  border: none;
-  cursor: pointer;
+input,button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  font-size:16px;
+  border-radius:8px;
+  box-sizing:border-box;
 }
 
-button:hover {
-  background: #072bb8;
+input{
+  border:1px solid #ccc;
 }
 
-.result {
-  margin-top: 20px;
-  font-size: 15px;
+button{
+  border:none;
+  background:#0a4bff;
+  color:white;
+  cursor:pointer;
 }
 
-.error {
-  color: red;
-  margin-top: 10px;
+button:hover{
+  background:#0833b8;
 }
 
-@media print {
-  input, button { display: none; }
-  body { background: white; }
+#error{
+  color:red;
+  margin-top:10px;
+  text-align:center;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+th,td{
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
+  font-size:14px;
+}
+
+th{
+  background:#f2f6ff;
+}
+
+.summary{
+  margin-top:12px;
+  font-weight:bold;
+}
+
+@media print{
+  input,button{display:none;}
+  body{background:white;}
+  .container{box-shadow:none;margin:0;}
 }
 </style>
 </head>
@@ -85,60 +118,31 @@ button:hover {
 <body>
 
 <div class="container">
-  <div class="content">
+<div class="content">
 
+  <div class="header">
+    <img src="https://raw.githubusercontent.com/Muha-Technology/Somali-Hope-Asset/main/Logo.png">
     <h2>Somali Hope Secondary School</h2>
-    <p style="text-align:center;font-weight:bold;">OFFICIAL RESULT SLIP</p>
-
-    <input id="studentId" placeholder="Enter Student ID">
-    <button onclick="loadResult()">View Result</button>
-    <button onclick="window.print()">🖨 Print / Save PDF</button>
-
-    <div class="error" id="error"></div>
-
-    <div class="result" id="result"></div>
-
+    <div class="sub">OFFICIAL RESULT SLIP</div>
   </div>
+
+  <input type="text" id="studentId" placeholder="Enter Student ID">
+  <button onclick="viewResult()">View Result</button>
+  <button onclick="window.print()">🖨 Print / Save PDF</button>
+
+  <div id="error"></div>
+  <div id="result"></div>
+
+</div>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHtfGmbZ2yoS7S1nKFExWCN_lfm9VGysyAMn4H-Fz93ibYtzsdu8rAOPbWcTAugcVJ/exec";
+/* 🔴 PASTE YOUR APPS SCRIPT WEB APP URL BELOW */
+const API_URL = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycby5jZn1fR8wJR8ZqG7chL2IzQSPLHSncyGgW8NHRuzPK9HK3W9ryiKJf0dZDxDe0Wvf/exec 
+/exec";
 
-async function loadResult() {
+async function viewResult(){
   const id = document.getElementById("studentId").value.trim();
-  const error = document.getElementById("error");
-  const result = document.getElementById("result");
-
-  error.innerText = "";
-  result.innerHTML = "";
-
-  if (!id) {
-    error.innerText = "Please enter Student ID";
+  if(!id){
+    alert("Please enter Student ID");
     return;
-  }
-
-  try {
-    const res = await fetch(`${SCRIPT_URL}?id=${encodeURIComponent(id)}`);
-    const data = await res.json();
-
-    if (!data) {
-      error.innerText = "Result not found";
-      return;
-    }
-
-    result.innerHTML = `
-      <hr>
-      <p><strong>Name:</strong> ${data.name}</p>
-      <p><strong>Class:</strong> ${data.class}</p>
-      <p><strong>Total:</strong> ${data.total}</p>
-      <p><strong>Average:</strong> ${data.average}</p>
-      <p><strong>Grade:</strong> ${data.grade}</p>
-    `;
-  } catch (e) {
-    error.innerText = "Server error";
-  }
-}
-</script>
-
-</body>
-</html>
