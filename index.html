@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Somali Hope Results Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+
+<style>
+:root{
+  --primary:#0a7c3b;
+  --secondary:#f4c430;
+  --bg:#eef6f1;
+}
+
+body{
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  margin:0;
+}
+
+.container{
+  max-width:560px;
+  margin:20px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 5px 20px rgba(0,0,0,.15);
+  position:relative;
+}
+
+.container::before{
+  content:"";
+  background:url("https://raw.githubusercontent.com/Muha-Technology/Somali-Hope-Asset/main/Logo.png") center no-repeat;
+  background-size:300px;
+  opacity:.05;
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.content{position:relative;z-index:2}
+
+header{text-align:center}
+header img{width:90px}
+h2{color:var(--primary);margin:5px 0}
+
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  font-size:16px;
+}
+
+button{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button:hover{background:#075c2c}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+th,td{
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
+}
+
+th{background:#f2f2f2}
+
+.rank{
+  background:var(--secondary);
+  padding:6px;
+  border-radius:6px;
+  margin-top:10px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.footer{
+  display:flex;
+  justify-content:space-between;
+  margin-top:20px;
+}
+
+@media print{
+  input,button{display:none}
+  body{background:#fff}
+  .container{box-shadow:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="content">
+
+<header>
+  <img src="https://raw.githubusercontent.com/Muha-Technology/Somali-Hope-Asset/main/Logo.png">
+  <h2>Somali Hope Secondary School</h2>
+  <strong>Official Result Slip</strong>
+</header>
+
+<input id="sid" placeholder="Enter Student ID">
+<button onclick="fetchResult()">View Result</button>
+<button onclick="window.print()">🖨 Print / PDF</button>
+
+<div id="result"></div>
+
+</div>
+</div>
+
+<script>
+let attempts=0;
+const MAX=3;
+const API="https://script.google.com/macros/s/AKfycbwds9K9BIIQW9p7_UHA6P9zfRx9VrDgfJe8Qq3yQ4y68lupJVjsTICg_yhwltcXPnOZ/exec";
+
+function fetchResult(){
+  if(attempts>=MAX){
+    alert("Too many attempts. Try later.");
+    return;
+  }
+
+  const id=document.getElementById("sid").value.trim();
+  if(!id) return alert("Enter ID");
+
+  attempts++;
+
+  fetch(API+"?action=result&id="+encodeURIComponent(id))
+  .then(r=>r.json())
+  .then(d=>{
+    if(!d.found){
+      document.getElementById("result").innerHTML="<p style='color:red'>Result not found</p>";
+      return;
+    }
+
+    let rows="";
+    d.subjects.forEach(s=>{
+      rows+=`<tr><td>${s.name}</td><td>${s.marks}</td><td>${s.grade}</td></tr>`;
+    });
+
+    document.getElementById("result").innerHTML=`
+      <hr>
+      <p><b>Name:</b> ${d.name}</p>
+      <p><b>Class Rank:</b> ${d.rank} / ${d.totalStudents}</p>
+
+      <table>
+        <tr><th>Subject</th><th>Marks</th><th>Grade</th></tr>
+        ${rows}
+      </table>
+
+      <div class="rank">Overall Grade: ${d.grade} | Avg: ${d.average}</div>
+
+      <div class="footer">
+        <div>
+          <img src="${d.photo}" width="90"><br>
+          Student Photo
+        </div>
+        <div>
+          <img src="${d.qr}" width="110"><br>
+          Verify
+        </div>
+      </div>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
