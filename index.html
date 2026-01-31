@@ -35,19 +35,9 @@ body{
 
 .content{position:relative;z-index:1;}
 
-.header{
-  text-align:center;
-}
-
-.header img{
-  width:110px;
-}
-
-.header h2{
-  margin:10px 0 3px;
-  color:#0a4bff;
-}
-
+.header{text-align:center;}
+.header img{width:110px;}
+.header h2{margin:10px 0 3px;color:#0a4bff;}
 .header .sub{
   font-weight:bold;
   border-bottom:2px solid #0a4bff;
@@ -61,12 +51,9 @@ input,button{
   margin-top:12px;
   font-size:16px;
   border-radius:8px;
-  box-sizing:border-box;
 }
 
-input{
-  border:1px solid #ccc;
-}
+input{border:1px solid #ccc;}
 
 button{
   border:none;
@@ -74,10 +61,7 @@ button{
   color:white;
   cursor:pointer;
 }
-
-button:hover{
-  background:#0833b8;
-}
+button:hover{background:#0833b8;}
 
 #error{
   color:red;
@@ -90,17 +74,13 @@ table{
   border-collapse:collapse;
   margin-top:15px;
 }
-
 th,td{
   border:1px solid #ccc;
   padding:6px;
   text-align:center;
   font-size:14px;
 }
-
-th{
-  background:#f2f6ff;
-}
+th{background:#f2f6ff;}
 
 .summary{
   margin-top:12px;
@@ -137,12 +117,28 @@ th{
 </div>
 
 <script>
-/* 🔴 PASTE YOUR APPS SCRIPT WEB APP URL BELOW */
-const API_URL = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycby5jZn1fR8wJR8ZqG7chL2IzQSPLHSncyGgW8NHRuzPK9HK3W9ryiKJf0dZDxDe0Wvf/exec 
-/exec";
+/* 🔴 PASTE YOUR REAL APPS SCRIPT WEB APP URL HERE */
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwAk_wzHGJjO-VguDXpJuJj1i2yIZLaLZa2X-M8Pdu1kMPyF-TUxn9nTqyK63urgUff/exec";
 
 async function viewResult(){
   const id = document.getElementById("studentId").value.trim();
+  const errorBox = document.getElementById("error");
+  const resultBox = document.getElementById("result");
+
+  errorBox.innerText = "";
+  resultBox.innerHTML = "";
+
   if(!id){
-    alert("Please enter Student ID");
+    errorBox.innerText = "Please enter Student ID";
     return;
+  }
+
+  resultBox.innerHTML = "Loading...";
+
+  try{
+    const res = await fetch(`${API_URL}?id=${encodeURIComponent(id)}`);
+    const data = await res.json();
+
+    if(!data || !data.name){
+      resu
